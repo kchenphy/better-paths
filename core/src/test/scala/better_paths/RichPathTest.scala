@@ -1,4 +1,5 @@
 package better_paths
+
 import java.io.IOException
 import java.nio.file.Files
 
@@ -26,7 +27,7 @@ class RichPathTest extends FlatSpec with Matchers
   val baseDir = Files.createTempDirectory("test_hdfs").toFile.getAbsoluteFile
   val conf = new Configuration()
   conf.set(MiniDFSCluster.HDFS_MINIDFS_BASEDIR, baseDir.getAbsolutePath)
-  implicit val fs : FileSystem = new MiniDFSCluster.Builder(conf).build.getFileSystem
+  implicit val fs: FileSystem = new MiniDFSCluster.Builder(conf).build.getFileSystem
 
   implicit val pathExistence: Existence[Path] = existIn(fs)
 
@@ -88,7 +89,7 @@ class RichPathTest extends FlatSpec with Matchers
 
   "mkdirs" should "create paths recursively" in {
     (tmpPath / "a" / "b").mkdirs
-    (tmpPath / "a" / "b").isDirectory shouldBe true
+    tmpPath / "a" / "b" should be a directory
   }
 
   "delete parent" should "delete children recursively" in {
@@ -116,10 +117,10 @@ class RichPathTest extends FlatSpec with Matchers
   "isFile/isDirectory" should "correctly detect whether path is file/directory" in {
     (tmpPath / "a" / "b").touchz
 
-    (tmpPath / "a").isDirectory shouldBe true
-    (tmpPath / "a").isFile shouldBe false
-    (tmpPath / "a" / "b").isDirectory shouldBe false
-    (tmpPath / "a" / "b").isFile shouldBe true
+    tmpPath / "a" should be a directory
+    tmpPath / "a" shouldNot be a file
+    tmpPath / "a" / "b" shouldNot be a directory
+    tmpPath / "a" / "b" should be a file
   }
 
   "list/glob" should "collect correct results" in {
