@@ -1,4 +1,4 @@
 package better_paths.scalatest_sugar
 
-trait PathSugar extends QualifiedByFileSystem with ExistInFileSystem
+trait PathSugar extends QualifiedByFileSystem with ExistInFileSystem with PathPropertyMatcher
 object PathSugar extends PathSugar
