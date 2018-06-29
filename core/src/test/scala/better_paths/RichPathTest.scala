@@ -71,6 +71,19 @@ class RichPathTest extends FlatSpec with Matchers
     nonExisting shouldNot exist
   }
 
+  "status" should "correctly return status of path" in {
+    val path = tmpPath / "a"
+    path.touch
+    path.status shouldBe fs.getFileStatus(path)
+  }
+
+  "length" should "correctly return length of path" in {
+    val path = tmpPath / "a"
+    path < "abc"
+    path.length shouldBe "abc".length
+  }
+
+
   "touchz" should "create a zero-length file, or throw IOException if file already exists" in {
     val path = tmpPath / "a"
     path.touchz

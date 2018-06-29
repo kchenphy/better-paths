@@ -1,7 +1,7 @@
 import java.nio.charset.{Charset, StandardCharsets}
 
 import org.apache.commons.io.IOUtils
-import org.apache.hadoop.fs.{FileSystem, Path, PathFilter}
+import org.apache.hadoop.fs.{FileStatus, FileSystem, Path, PathFilter}
 import resource._
 
 package object better_paths {
@@ -30,6 +30,10 @@ package object better_paths {
     def qualified(implicit fs: FileSystem): Path = fs.makeQualified(path)
 
     def resolved(implicit fs: FileSystem): Path = fs.resolvePath(path)
+
+    def status(implicit fs: FileSystem): FileStatus = fs.getFileStatus(path)
+
+    def length(implicit fs: FileSystem): Long = fs.getFileStatus(path).getLen
 
     def exists(implicit fs: FileSystem): Boolean = fs.exists(path)
 
