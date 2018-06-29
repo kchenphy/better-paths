@@ -2,10 +2,10 @@ package better_paths
 import java.io.IOException
 import java.nio.file.Files
 
+import better_paths.scalatest_sugar.PathSugar
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.hadoop.hdfs.MiniDFSCluster
-import org.scalactic.Uniformity
 import org.scalatest._
 import org.scalatest.enablers.Existence
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -21,27 +21,14 @@ trait TempPathProvider extends BeforeAndAfterEach {
 }
 
 class RichPathTest extends FlatSpec with Matchers
-  with TableDrivenPropertyChecks with TempPathProvider {
+  with TableDrivenPropertyChecks with TempPathProvider with PathSugar {
 
   val baseDir = Files.createTempDirectory("test_hdfs").toFile.getAbsoluteFile
   val conf = new Configuration()
   conf.set(MiniDFSCluster.HDFS_MINIDFS_BASEDIR, baseDir.getAbsolutePath)
   implicit val fs : FileSystem = new MiniDFSCluster.Builder(conf).build.getFileSystem
 
-  implicit val pathExistence: Existence[Path] = new Existence[Path] {
-    override def exists(thing: Path): Boolean = thing.exists
-  }
-
-  val qualified = new Uniformity[Path] {
-
-    override def normalizedOrSame(b: Any): Any = b match {
-      case p: Path => p.qualified
-      case _ => b
-    }
-
-    override def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[Path]
-    override def normalized(a: Path): Path = a.qualified
-  }
+  implicit val pathExistence: Existence[Path] = existIn(fs)
 
   "RichPath" should "build path with slash" in {
     val expected = new Path("a", "b")
