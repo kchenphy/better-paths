@@ -1,19 +1,14 @@
 package better_paths
 
-import java.io.IOException
-
 import better_paths.Dsl._
 import better_paths.common.{TempPathProvider, TestMiniDFSCluster}
 import better_paths.scalatest_sugar.PathSugar
 import org.apache.hadoop.fs.Path
 import org.scalatest._
-import org.scalatest.enablers.Existence
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 class RichPathTest extends FlatSpec with Matchers
   with TableDrivenPropertyChecks with TempPathProvider with TestMiniDFSCluster with PathSugar {
-
-  implicit val pathExistence: Existence[Path] = existIn(fs)
 
   "Path interpolation" should "work as expected" in {
     val user = "JohnDoe"
@@ -74,50 +69,6 @@ class RichPathTest extends FlatSpec with Matchers
     val path = tmpPath / "a"
     path < "abc"
     path.length shouldBe "abc".length
-  }
-
-
-  "touchz" should "create a zero-length file, or throw IOException if file already exists" in {
-    val path = tmpPath / "a"
-    touchz(path)
-    path should exist
-    intercept[IOException] {
-      touchz(path)
-    }
-  }
-
-  "touch" should "create a zero-length file only when file is non-existing, or do nothing if file already exists" in {
-    touch(tmpPath / "a")
-    tmpPath / "a" should exist
-  }
-
-  "mkdirs" should "create paths recursively" in {
-    mkdirs(tmpPath / "a" / "b")
-    tmpPath / "a" / "b" should be a directory
-  }
-
-  "delete parent" should "delete children recursively" in {
-    val parent = tmpPath / "a"
-    val path = parent / "b"
-    touch(path)
-    path should exist
-
-    delete(parent)
-    parent shouldNot exist
-    path shouldNot exist
-  }
-
-  "delete children" should "not delete parent" in {
-    val parent = tmpPath / "a"
-    val path = parent / "b"
-
-    mkdirs(path)
-
-    path should exist
-
-    delete(path)
-    path shouldNot exist
-    parent should exist
   }
 
   "parent/children" should "return correct results" in {
