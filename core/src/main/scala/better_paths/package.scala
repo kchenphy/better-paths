@@ -4,7 +4,7 @@ import org.apache.commons.io.IOUtils
 import org.apache.hadoop.fs.{FileStatus, FileSystem, Path, PathFilter}
 import resource._
 
-package object better_paths {
+package object better_paths extends Implicits {
 
   object RichPath {
     def IsFile(implicit fs: FileSystem): PathFilter = new PathFilter {
@@ -96,5 +96,6 @@ package object better_paths {
     def contentAsString(implicit charset: Charset = StandardCharsets.UTF_8): String =
       IOUtils.toString(fs.open(path), charset)
   }
+
 
 }

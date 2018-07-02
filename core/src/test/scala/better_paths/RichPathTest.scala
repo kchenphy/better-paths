@@ -31,6 +31,15 @@ class RichPathTest extends FlatSpec with Matchers
 
   implicit val pathExistence: Existence[Path] = existIn(fs)
 
+  "Path interpolation" should "work as expected" in {
+    val user = "JohnDoe"
+    val folder = "my_folder"
+    val id = 123
+    val path = p"/${user}/${folder}/${id}.txt"
+
+    path shouldBe new Path("/JohnDoe/my_folder/123.txt")
+  }
+
   "RichPath" should "build path with slash" in {
     val expected = new Path("a", "b")
     val testCases = Table(
