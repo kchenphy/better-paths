@@ -1,33 +1,17 @@
 package better_paths
 
 import java.io.IOException
-import java.nio.file.Files
 
+import better_paths.Dsl._
+import better_paths.common.{TempPathProvider, TestMiniDFSCluster}
 import better_paths.scalatest_sugar.PathSugar
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.{FileSystem, Path}
-import org.apache.hadoop.hdfs.MiniDFSCluster
+import org.apache.hadoop.fs.Path
 import org.scalatest._
 import org.scalatest.enablers.Existence
 import org.scalatest.prop.TableDrivenPropertyChecks
 
-trait TempPathProvider extends BeforeAndAfterEach {
-  self: Suite =>
-  var tmpPath: Path = _
-
-  override protected def beforeEach(): Unit = {
-    super.beforeEach()
-    tmpPath = new Path(System.getProperty("java.io.tmpdir"), System.nanoTime().toString)
-  }
-}
-
 class RichPathTest extends FlatSpec with Matchers
-  with TableDrivenPropertyChecks with TempPathProvider with PathSugar {
-
-  val baseDir = Files.createTempDirectory("test_hdfs").toFile.getAbsoluteFile
-  val conf = new Configuration()
-  conf.set(MiniDFSCluster.HDFS_MINIDFS_BASEDIR, baseDir.getAbsolutePath)
-  implicit val fs: FileSystem = new MiniDFSCluster.Builder(conf).build.getFileSystem
+  with TableDrivenPropertyChecks with TempPathProvider with TestMiniDFSCluster with PathSugar {
 
   implicit val pathExistence: Existence[Path] = existIn(fs)
 
@@ -67,13 +51,13 @@ class RichPathTest extends FlatSpec with Matchers
 
   "resolved" should "return a resolved path with `resolved`" in {
     val path = tmpPath / "a" / "b"
-    fs.mkdirs(path)
+    mkdirs(path)
     path.resolved shouldBe fs.resolvePath(path)
   }
 
   "exists" should "correctly return existence of path" in {
     val existing = tmpPath / "a" / "b"
-    fs.mkdirs(existing)
+    mkdirs(existing)
 
     val nonExisting = tmpPath / "a" / "c"
     existing should exist
@@ -82,7 +66,7 @@ class RichPathTest extends FlatSpec with Matchers
 
   "status" should "correctly return status of path" in {
     val path = tmpPath / "a"
-    path.touch
+    touch(path)
     path.status shouldBe fs.getFileStatus(path)
   }
 
@@ -95,32 +79,30 @@ class RichPathTest extends FlatSpec with Matchers
 
   "touchz" should "create a zero-length file, or throw IOException if file already exists" in {
     val path = tmpPath / "a"
-    path.touchz
+    touchz(path)
     path should exist
     intercept[IOException] {
-      path.touchz
+      touchz(path)
     }
   }
 
   "touch" should "create a zero-length file only when file is non-existing, or do nothing if file already exists" in {
-    (tmpPath / "a").touch
+    touch(tmpPath / "a")
     tmpPath / "a" should exist
-
-    (tmpPath / "a").touch
   }
 
   "mkdirs" should "create paths recursively" in {
-    (tmpPath / "a" / "b").mkdirs
+    mkdirs(tmpPath / "a" / "b")
     tmpPath / "a" / "b" should be a directory
   }
 
   "delete parent" should "delete children recursively" in {
     val parent = tmpPath / "a"
     val path = parent / "b"
-    path.touch
+    touch(path)
     path should exist
 
-    parent.delete()
+    delete(parent)
     parent shouldNot exist
     path shouldNot exist
   }
@@ -128,10 +110,12 @@ class RichPathTest extends FlatSpec with Matchers
   "delete children" should "not delete parent" in {
     val parent = tmpPath / "a"
     val path = parent / "b"
-    path.mkdirs
+
+    mkdirs(path)
+
     path should exist
 
-    path.delete()
+    delete(path)
     path shouldNot exist
     parent should exist
   }
@@ -140,8 +124,8 @@ class RichPathTest extends FlatSpec with Matchers
     val parent = tmpPath / "a"
     val child1 = parent / "b"
     val child2 = parent / "c"
-    child1.mkdirs
-    child2.mkdirs
+    mkdirs(child1)
+    mkdirs(child2)
 
     (parent.children should contain theSameElementsAs Array(child1, child2)) (after being qualified)
     child1.parent shouldBe parent
@@ -149,7 +133,7 @@ class RichPathTest extends FlatSpec with Matchers
   }
 
   "isFile/isDirectory" should "correctly detect whether path is file/directory" in {
-    (tmpPath / "a" / "b").touchz
+    touchz(tmpPath / "a" / "b")
 
     tmpPath / "a" should be a directory
     tmpPath / "a" shouldNot be a file
@@ -158,9 +142,9 @@ class RichPathTest extends FlatSpec with Matchers
   }
 
   "list/glob" should "collect correct results" in {
-    (tmpPath / "a/b/c").touchz
-    (tmpPath / "a/d").touchz
-    (tmpPath / "a/e").mkdirs
+    touchz(tmpPath / "a/b/c")
+    touchz(tmpPath / "a/d")
+    mkdirs(tmpPath / "a/e")
 
     val testCases = Table(
       ("actual", "expected"),
