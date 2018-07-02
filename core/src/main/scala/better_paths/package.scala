@@ -17,7 +17,7 @@ package object better_paths {
   }
 
 
-  implicit class RichPath(val path: Path) {
+  implicit class RichPath(val path: Path)(implicit fs: FileSystem) {
 
     import RichPath._
 
@@ -27,73 +27,73 @@ package object better_paths {
 
     def basename: String = path.getName
 
-    def qualified(implicit fs: FileSystem): Path = fs.makeQualified(path)
+    def qualified: Path = fs.makeQualified(path)
 
-    def resolved(implicit fs: FileSystem): Path = fs.resolvePath(path)
+    def resolved: Path = fs.resolvePath(path)
 
-    def status(implicit fs: FileSystem): FileStatus = fs.getFileStatus(path)
+    def status: FileStatus = fs.getFileStatus(path)
 
-    def length(implicit fs: FileSystem): Long = fs.getFileStatus(path).getLen
+    def length: Long = fs.getFileStatus(path).getLen
 
-    def exists(implicit fs: FileSystem): Boolean = fs.exists(path)
+    def exists: Boolean = fs.exists(path)
 
-    def isFile(implicit fs: FileSystem): Boolean = fs.isFile(path)
+    def isFile: Boolean = fs.isFile(path)
 
-    def isDirectory(implicit fs: FileSystem): Boolean = fs.isDirectory(path)
+    def isDirectory: Boolean = fs.isDirectory(path)
 
-    def delete(recursive: Boolean = true)(implicit fs: FileSystem): Boolean = fs.delete(path, recursive)
+    def delete(recursive: Boolean = true): Boolean = fs.delete(path, recursive)
 
-    def touch(implicit fs: FileSystem): Path = if (!path.exists) touchz else path
+    def touch: Path = if (!path.exists) touchz else path
 
-    def touchz(implicit fs: FileSystem): Path = {
+    def touchz: Path = {
       fs.create(path, false, fs.getConf.getInt("io.file.buffer.size", 4096)).close()
       path
     }
 
-    def mkdirs(implicit fs: FileSystem): Path = {
+    def mkdirs: Path = {
       fs.mkdirs(path)
       path
     }
 
-    def globPath(pathFilter: PathFilter)(implicit fs: FileSystem): Array[Path] =
+    def globPath(pathFilter: PathFilter): Array[Path] =
       fs.globStatus(path, pathFilter).map(_.getPath)
 
-    def globDirectories(implicit fs: FileSystem): Array[Path] =
+    def globDirectories: Array[Path] =
       globPath(IsDirectory)
 
-    def globFiles(implicit fs: FileSystem): Array[Path] =
+    def globFiles: Array[Path] =
       globPath(IsFile)
 
-    def listPath(pathFilter: PathFilter)(implicit fs: FileSystem): Array[Path] =
+    def listPath(pathFilter: PathFilter): Array[Path] =
       fs.listStatus(path, pathFilter).map(_.getPath)
 
-    def listDirectories(implicit fs: FileSystem): Array[Path] =
+    def listDirectories: Array[Path] =
       listPath(IsDirectory)
 
-    def listFiles(implicit fs: FileSystem): Array[Path] =
+    def listFiles: Array[Path] =
       listPath(IsFile)
 
-    def <(line: String)(implicit fs: FileSystem, charset: Charset = StandardCharsets.UTF_8): Path = {
+    def <(line: String)(implicit charset: Charset = StandardCharsets.UTF_8): Path = {
       managed(fs.create(path, true)).acquireAndGet { _.write(line.getBytes(charset)) }
       path
     }
 
-    def <<(line: String)(implicit fs: FileSystem, charset: Charset = StandardCharsets.UTF_8): Path = {
+    def <<(line: String)(implicit charset: Charset = StandardCharsets.UTF_8): Path = {
       managed(fs.append(path.touch)).acquireAndGet { _.write(line.getBytes(charset)) }
       path
     }
 
-    def `>:`(line: String)(implicit fs: FileSystem, charset: Charset = StandardCharsets.UTF_8): Unit =
+    def `>:`(line: String)(implicit charset: Charset = StandardCharsets.UTF_8): Unit =
       <(line)
 
-    def <|(paths: Seq[Path])(implicit fs: FileSystem): Path = {
+    def <|(paths: Seq[Path]): Path = {
       fs.concat(path.touch, paths.toArray)
       path
     }
 
-    def |>:(paths: Seq[Path])(implicit fs: FileSystem): Unit = <|(paths)
+    def |>:(paths: Seq[Path]): Unit = <|(paths)
 
-    def contentAsString(implicit fs: FileSystem, charset: Charset = StandardCharsets.UTF_8): String =
+    def contentAsString(implicit charset: Charset = StandardCharsets.UTF_8): String =
       IOUtils.toString(fs.open(path), charset)
   }
 

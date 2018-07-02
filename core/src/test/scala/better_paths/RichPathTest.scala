@@ -17,7 +17,7 @@ trait TempPathProvider extends BeforeAndAfterEach {
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    tmpPath = new Path(System.getProperty("java.io.tmpdir")) / System.nanoTime().toString
+    tmpPath = new Path(System.getProperty("java.io.tmpdir"), System.nanoTime().toString)
   }
 }
 
@@ -157,19 +157,21 @@ class RichPathTest extends FlatSpec with Matchers
 
   "<" should "correctly write content into file" in {
     val path = tmpPath / "a"
-    (path < "some content").contentAsString shouldBe "some content"
+    path < "some content"
+    path.contentAsString() shouldBe "some content"
   }
 
   "<<" should "correctly append content to file, even when path does not exist" in {
     val path = tmpPath / "a"
-    (path << "some content").contentAsString shouldBe "some content"
+    path << "some content"
+    path.contentAsString() shouldBe "some content"
   }
 
   "<|" should "correctly merge files" in {
     (tmpPath / "a") < "some content\n"
     (tmpPath / "b") < "some other content"
     tmpPath.listFiles |>: (tmpPath / "merged")
-    (tmpPath / "merged").contentAsString shouldBe "some content\nsome other content"
+    (tmpPath / "merged").contentAsString() shouldBe "some content\nsome other content"
   }
 
 }
