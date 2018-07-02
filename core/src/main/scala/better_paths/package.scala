@@ -14,6 +14,7 @@ package object better_paths extends Implicits {
     def IsDirectory(implicit fs: FileSystem): PathFilter = new PathFilter {
       override def accept(path: Path): Boolean = fs.isDirectory(path)
     }
+
   }
 
 
@@ -72,6 +73,9 @@ package object better_paths extends Implicits {
 
     def listFiles: Array[Path] =
       listPath(IsFile)
+
+    def parent: Path = path.getParent
+    def children: Array[Path] = fs.listStatus(path).map(_.getPath)
 
     def <(line: String)(implicit charset: Charset = StandardCharsets.UTF_8): Path = {
       managed(fs.create(path, true)).acquireAndGet { _.write(line.getBytes(charset)) }

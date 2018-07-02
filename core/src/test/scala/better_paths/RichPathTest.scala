@@ -136,6 +136,18 @@ class RichPathTest extends FlatSpec with Matchers
     parent should exist
   }
 
+  "parent/children" should "return correct results" in {
+    val parent = tmpPath / "a"
+    val child1 = parent / "b"
+    val child2 = parent / "c"
+    child1.mkdirs
+    child2.mkdirs
+
+    (parent.children should contain theSameElementsAs Array(child1, child2)) (after being qualified)
+    child1.parent shouldBe parent
+    child2.parent shouldBe parent
+  }
+
   "isFile/isDirectory" should "correctly detect whether path is file/directory" in {
     (tmpPath / "a" / "b").touchz
 
