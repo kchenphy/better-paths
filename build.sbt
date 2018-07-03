@@ -6,8 +6,19 @@ lazy val miniClusterDependencies = Seq(
   "org.apache.hadoop" % "hadoop-minicluster" % hadoopVersion % "compile,test"
 )
 
+lazy val common = project.in(file("common"))
+  .settings(
+    scalaVersion := "2.11.7",
+    libraryDependencies ++= Seq(
+      "org.apache.hadoop" % "hadoop-common" % hadoopVersion % "compile,test" classifier "" classifier "tests",
+      "org.scalactic" %% "scalactic" % "3.0.5",
+      "org.scalatest" %% "scalatest" % "3.0.5"
+    )
+  )
+
 lazy val testSugar = project
   .in(file("scalatest_sugar"))
+  .dependsOn(common)
   .settings(
     name := "better-paths-scalatest-sugar",
     version := "1.0-SNAPSHOT",
@@ -22,7 +33,7 @@ lazy val testSugar = project
 
 lazy val core = project
   .in(file("core"))
-  .dependsOn(testSugar)
+  .dependsOn(testSugar, common)
   .settings(
     name := "better-paths",
     version := "1.0-SNAPSHOT",

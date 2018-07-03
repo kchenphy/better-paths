@@ -5,20 +5,7 @@ import org.apache.hadoop.fs.{FileStatus, FileSystem, Path, PathFilter}
 
 package object better_paths extends Implicits {
 
-  object RichPath {
-    def IsFile(implicit fs: FileSystem): PathFilter = new PathFilter {
-      override def accept(path: Path): Boolean = fs.isFile(path)
-    }
-
-    def IsDirectory(implicit fs: FileSystem): PathFilter = new PathFilter {
-      override def accept(path: Path): Boolean = fs.isDirectory(path)
-    }
-
-  }
-
   implicit class RichPath(val path: Path)(implicit fs: FileSystem) {
-
-    import RichPath._
 
     def /(child: String): Path = new Path(path, child)
 
