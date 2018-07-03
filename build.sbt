@@ -13,7 +13,8 @@ lazy val common = project.in(file("common"))
       "org.apache.hadoop" % "hadoop-common" % hadoopVersion % "compile,test" classifier "" classifier "tests",
       "org.scalactic" %% "scalactic" % "3.0.5",
       "org.scalatest" %% "scalatest" % "3.0.5"
-    )
+    ),
+    scalacOptions ++= Seq("-Xexperimental")
   )
 
 lazy val testSugar = project
