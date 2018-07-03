@@ -7,12 +7,10 @@ import better_paths.common.{TempPathProvider, TestMiniDFSCluster}
 import better_paths.scalatest_sugar.PathSugar
 import org.apache.hadoop.fs.Path
 import org.scalatest._
-import org.scalatest.enablers.Existence
+import Dsl._
 
-class DslTest extends FlatSpec with Matchers with TempPathProvider with PathSugar with TestMiniDFSCluster
-  with Inspectors {
-
-  implicit val pathExistence: Existence[Path] = existence(fs)
+class DslTest extends FlatSpec with Matchers with TempPathProvider with PathSugar
+  with TestMiniDFSCluster with Inspectors {
 
   "touch" should "create a zero-length file only when file is non-existing, or do nothing if file already exists" in {
     touch(tmpPath / "a")
@@ -61,4 +59,24 @@ class DslTest extends FlatSpec with Matchers with TempPathProvider with PathSuga
       delete(tmpPath, recursive = false)
     }
   }
+
+  "<" should "correctly write content into file" in {
+    val path = tmpPath / "a"
+    path < "some content"
+    path.contentAsString() shouldBe "some content"
+  }
+
+  "<<" should "correctly append content to file, even when path does not exist" in {
+    val path = tmpPath / "a"
+    path << "some content"
+    path.contentAsString() shouldBe "some content"
+  }
+
+  "<|" should "correctly merge files" in {
+    (tmpPath / "a") < "some content\n"
+    (tmpPath / "b") < "some other content"
+    tmpPath.listFiles |>: (tmpPath / "merged")
+    (tmpPath / "merged").contentAsString() shouldBe "some content\nsome other content"
+  }
+
 }
