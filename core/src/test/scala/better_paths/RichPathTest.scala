@@ -116,23 +116,4 @@ class RichPathTest extends FlatSpec with Matchers
     }
   }
 
-  "<" should "correctly write content into file" in {
-    val path = tmpPath / "a"
-    path < "some content"
-    path.contentAsString() shouldBe "some content"
-  }
-
-  "<<" should "correctly append content to file, even when path does not exist" in {
-    val path = tmpPath / "a"
-    path << "some content"
-    path.contentAsString() shouldBe "some content"
-  }
-
-  "<|" should "correctly merge files" in {
-    (tmpPath / "a") < "some content\n"
-    (tmpPath / "b") < "some other content"
-    tmpPath.listFiles |>: (tmpPath / "merged")
-    (tmpPath / "merged").contentAsString() shouldBe "some content\nsome other content"
-  }
-
 }
