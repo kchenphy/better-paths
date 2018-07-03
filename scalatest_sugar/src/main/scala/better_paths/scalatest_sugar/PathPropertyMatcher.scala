@@ -12,6 +12,10 @@ trait PathPropertyMatcher {
     def apply(left: Path) = BePropertyMatchResult(fs.isDirectory(left), "directory")
   }
 
+  class IsSymlinkMatcher(fs: FileSystem) extends BePropertyMatcher[Path] {
+    def apply(left: Path)= BePropertyMatchResult(fs.getFileLinkStatus(left).isSymlink, "symlink")
+  }
+
   /** Enables matcher test like the following:
     *
     * <pre>
@@ -35,4 +39,6 @@ trait PathPropertyMatcher {
     * @return an instance of [[IsDirectoryMatcher]]
     */
   def directory(implicit fs: FileSystem) = new IsDirectoryMatcher(fs)
+
+  def symlink(implicit fs: FileSystem) = new IsSymlinkMatcher(fs)
 }

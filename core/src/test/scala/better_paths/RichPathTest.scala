@@ -83,13 +83,18 @@ class RichPathTest extends FlatSpec with Matchers
     child2.parent shouldBe parent
   }
 
-  "isFile/isDirectory" should "correctly detect whether path is file/directory" in {
+  "isFile/isDirectory/isSymlink" should "correctly detect the type of path" in {
     touchz(tmpPath / "a" / "b")
 
     tmpPath / "a" should be a directory
     tmpPath / "a" shouldNot be a file
     tmpPath / "a" / "b" shouldNot be a directory
     tmpPath / "a" / "b" should be a file
+
+    touchz(tmpPath / "c")
+    ln(tmpPath / "d", tmpPath / "c")
+    val status = (tmpPath / "d").status
+    tmpPath / "d" should be a symlink
   }
 
   "list/glob" should "collect correct results" in {
