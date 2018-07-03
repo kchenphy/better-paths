@@ -8,13 +8,11 @@ abstract class PathPredicate(val name: String) {
 }
 
 object PathPredicate {
-  implicit def predicateToPathFilter(predicate: PathPredicate)(implicit fs: FileSystem): PathFilter = new PathFilter {
-    override def accept(path: Path): Boolean = predicate.apply(path)
-  }
+  implicit def predicateToPathFilter(predicate: PathPredicate)(implicit fs: FileSystem): PathFilter =
+    (path: Path) => predicate.apply(path)
 
-  implicit def predicateToBePropertyMatcher(predicate: PathPredicate)(implicit fs: FileSystem): BePropertyMatcher[Path] = new BePropertyMatcher[Path] {
-    override def apply(path: Path): BePropertyMatchResult = new BePropertyMatchResult(predicate.apply(path), predicate.name)
-  }
+  implicit def predicateToBePropertyMatcher(predicate: PathPredicate)(implicit fs: FileSystem): BePropertyMatcher[Path] =
+    (path: Path) => new BePropertyMatchResult(predicate.apply(path), predicate.name)
 }
 
 object IsFile extends PathPredicate("file") {
