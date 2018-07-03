@@ -47,4 +47,5 @@ object Dsl {
     path
   }
 
+  def ln(link: Path, target: Path)(implicit fs: FileSystem): Unit = fs.createSymlink(target, link, true)
 }

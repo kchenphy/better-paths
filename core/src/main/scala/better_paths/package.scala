@@ -31,6 +31,7 @@ package object better_paths extends Implicits {
     def resolved: Path = fs.resolvePath(path)
 
     def status: FileStatus = fs.getFileStatus(path)
+    def linkStatus: FileStatus = fs.getFileLinkStatus(path)
 
     def length: Long = fs.getFileStatus(path).getLen
 
@@ -39,6 +40,8 @@ package object better_paths extends Implicits {
     def isFile: Boolean = fs.isFile(path)
 
     def isDirectory: Boolean = fs.isDirectory(path)
+
+    def isSymlink: Boolean = linkStatus.isSymlink
 
     def globPath(pathFilter: PathFilter): Array[Path] =
       fs.globStatus(path, pathFilter).map(_.getPath)
