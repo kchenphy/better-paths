@@ -7,7 +7,6 @@ import better_paths.common.{TempPathProvider, TestMiniDFSCluster}
 import better_paths.scalatest_sugar.PathSugar
 import org.apache.hadoop.fs.Path
 import org.scalatest._
-import Dsl._
 
 class DslTest extends FlatSpec with Matchers with TempPathProvider with PathSugar
   with TestMiniDFSCluster with Inspectors {
@@ -60,23 +59,23 @@ class DslTest extends FlatSpec with Matchers with TempPathProvider with PathSuga
     }
   }
 
-  "<" should "correctly write content into file" in {
-    val path = tmpPath / "a"
-    path < "some content"
-    path.contentAsString() shouldBe "some content"
-  }
-
-  "<<" should "correctly append content to file, even when path does not exist" in {
-    val path = tmpPath / "a"
-    path << "some content"
-    path.contentAsString() shouldBe "some content"
-  }
-
-  "<|" should "correctly merge files" in {
-    (tmpPath / "a") < "some content\n"
-    (tmpPath / "b") < "some other content"
-    tmpPath.listFiles |>: (tmpPath / "merged")
-    (tmpPath / "merged").contentAsString() shouldBe "some content\nsome other content"
-  }
+//  "<" should "correctly write content into file" in {
+//    val path = tmpPath / "a"
+//    path < "some content"
+//    path.contentAsString() shouldBe "some content"
+//  }
+//
+//  "<<" should "correctly append content to file, even when path does not exist" in {
+//    val path = tmpPath / "a"
+//    path << "some content"
+//    path.contentAsString() shouldBe "some content"
+//  }
+//
+//  "<|" should "correctly merge files" in {
+//    (tmpPath / "a") < "some content\n"
+//    (tmpPath / "b") < "some other content"
+//    tmpPath.listFiles |>: (tmpPath / "merged")
+//    (tmpPath / "merged").contentAsString() shouldBe "some content\nsome other content"
+//  }
 
 }
