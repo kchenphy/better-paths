@@ -1,8 +1,8 @@
 package better_paths
 
-import org.apache.hadoop.fs.Path
+import org.apache.hadoop.fs.{FileStatus, FileSystem, Path, PathFilter}
 
-class Implicits {
+trait Implicits {
 
   /** Path interpolations, enabling syntax like:
     *
@@ -15,5 +15,53 @@ class Implicits {
     */
   implicit class PathInterpolations(sc: StringContext) {
     def p(args: Any*): Path = new Path(sc.s(args: _*))
+  }
+
+  implicit class PathBuilderOps(path: Path) {
+    def /(child: String): Path = new Path(path, child)
+
+    def /(child: Path): Path = new Path(path, child)
+  }
+
+  implicit class PathNameOps(path: Path) {
+    def basename: String = path.getName
+
+    def qualified(implicit fs: FileSystem): Path = fs.makeQualified(path)
+
+    def resolved(implicit fs: FileSystem): Path = fs.resolvePath(path)
+  }
+
+  implicit class PathStructureOps(path: Path) {
+    def parent: Path = path.getParent
+
+    def children(implicit fs: FileSystem): Array[Path] = fs.listStatus(path).map(_.getPath)
+  }
+
+  implicit class PathAttributeOps(path: Path)(implicit fs: FileSystem) {
+    def isFile: Boolean = fs.isFile(path)
+
+    def isDirectory: Boolean = fs.isDirectory(path)
+
+    def isSymlink: Boolean = fs.getFileLinkStatus(path).isSymlink
+
+    def length: Long = fs.getFileStatus(path).getLen
+
+    def status: FileStatus = fs.getFileStatus(path)
+
+    def exists: Boolean = fs.exists(path)
+  }
+
+  implicit class PathGlobOps(path: Path)(implicit fs: FileSystem) {
+    def globPath(pathFilter: PathFilter): Array[Path] = fs.globStatus(path, pathFilter).map(_.getPath)
+
+    def globDirectories: Array[Path] = globPath(IsDirectory)
+
+    def globFiles: Array[Path] = globPath(IsFile)
+
+    def listPath(pathFilter: PathFilter): Array[Path] = fs.listStatus(path, pathFilter).map(_.getPath)
+
+    def listDirectories: Array[Path] = listPath(IsDirectory)
+
+    def listFiles: Array[Path] = listPath(IsFile)
   }
 }
