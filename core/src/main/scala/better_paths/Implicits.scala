@@ -1,6 +1,13 @@
 package better_paths
 
+import java.io.{BufferedReader, InputStream, InputStreamReader}
+import java.nio.charset.{Charset, StandardCharsets}
+import java.util.stream.Collectors
+
+import org.apache.commons.io.IOUtils
 import org.apache.hadoop.fs.{FileStatus, FileSystem, Path, PathFilter}
+
+import scala.collection.JavaConverters._
 
 trait Implicits {
 
@@ -64,4 +71,22 @@ trait Implicits {
 
     def listFiles: Array[Path] = listPath(IsFile)
   }
+
+  implicit class PathContent(path: Path) {
+    def contentAsString(implicit fs: FileSystem, charset: Charset = StandardCharsets.UTF_8): String =
+      IOUtils.toString(fs.open(path), charset)
+
+    def lines(implicit fs: FileSystem, charset: Charset = StandardCharsets.UTF_8): Seq[String] =
+      newBufferedReader(fs.open(path), charset).lines().collect(Collectors.toList()).asScala
+
+    def lineIterator(implicit fs: FileSystem, charset: Charset = StandardCharsets.UTF_8): Iterator[String] =
+      newBufferedReader(fs.open(path), charset).lines().iterator().asScala
+
+    private def newBufferedReader(inputStream: InputStream, charset: Charset): BufferedReader = {
+      val decoder = charset.newDecoder
+      val reader = new InputStreamReader(inputStream, decoder)
+      new BufferedReader(reader)
+    }
+  }
+
 }
