@@ -8,14 +8,24 @@ import org.apache.hadoop.hdfs.MiniDFSCluster
 import org.scalatest.{BeforeAndAfterAll, Suite}
 
 
-trait TestMiniDFSCluster {
+trait TestMiniDFSCluster extends BeforeAndAfterAll {
+  self: Suite =>
 
-  private lazy val fsImpl: FileSystem = {
-    val baseDir = Files.createTempDirectory("test_hdfs").toFile.getAbsoluteFile
+  private var cluster: MiniDFSCluster = _
+
+  implicit def fs: FileSystem = cluster.getFileSystem()
+
+  override protected def beforeAll(): Unit = {
+    super.beforeAll()
+
+    val baseDir = Files.createTempDirectory("test_hdfs_" + System.nanoTime().toString).toFile.getAbsoluteFile
     val conf = new Configuration()
     conf.set(MiniDFSCluster.HDFS_MINIDFS_BASEDIR, baseDir.getAbsolutePath)
-    new MiniDFSCluster.Builder(conf).build().getFileSystem
+    cluster = new MiniDFSCluster.Builder(conf).build()
   }
 
-  implicit def fs: FileSystem = fsImpl
+  override protected def afterAll(): Unit = {
+    cluster.shutdown(false, true)
+    super.afterAll()
+  }
 }
