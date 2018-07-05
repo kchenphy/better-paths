@@ -8,8 +8,13 @@ import better_paths.scalatest_sugar.PathSugar
 import org.apache.hadoop.fs.Path
 import org.scalatest._
 
-class DslSpec extends FlatSpec with Matchers with TempPathProvider with PathSugar
-  with TestMiniDFSCluster with Inspectors {
+class DslSpec
+    extends FlatSpec
+    with Matchers
+    with TempPathProvider
+    with PathSugar
+    with TestMiniDFSCluster
+    with Inspectors {
 
   "touch" should "create a zero-length file only when file is non-existing, or do nothing if file already exists" in {
     touch(tmpPath / "a")

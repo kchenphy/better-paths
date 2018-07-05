@@ -6,8 +6,13 @@ import better_paths.scalatest_sugar.PathSugar
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.{FlatSpec, Matchers}
 
-class PathGlobSpec extends FlatSpec with Matchers with TestMiniDFSCluster with TempPathProvider with PathSugar
-  with TableDrivenPropertyChecks {
+class PathGlobSpec
+    extends FlatSpec
+    with Matchers
+    with TestMiniDFSCluster
+    with TempPathProvider
+    with PathSugar
+    with TableDrivenPropertyChecks {
 
   "list/glob" should "collect correct results" in {
     touchz(tmpPath / "b" / "c")
@@ -23,8 +28,8 @@ class PathGlobSpec extends FlatSpec with Matchers with TestMiniDFSCluster with T
       ((tmpPath / "*" / "c").globFiles, List(tmpPath / "b" / "c"))
     )
 
-    forAll(testCases) {
-      (actual, expected) => (actual should contain theSameElementsAs expected) (after being qualified)
+    forAll(testCases) { (actual, expected) =>
+      (actual should contain theSameElementsAs expected)(after being qualified)
     }
   }
 }

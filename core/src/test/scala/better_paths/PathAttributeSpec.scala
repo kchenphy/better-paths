@@ -5,7 +5,12 @@ import better_paths.common.{TempPathProvider, TestMiniDFSCluster}
 import better_paths.scalatest_sugar.PathSugar
 import org.scalatest.{FlatSpec, Matchers}
 
-class PathAttributeSpec extends FlatSpec with Matchers with TestMiniDFSCluster with TempPathProvider with PathSugar {
+class PathAttributeSpec
+    extends FlatSpec
+    with Matchers
+    with TestMiniDFSCluster
+    with TempPathProvider
+    with PathSugar {
   "exists" should "correctly return existence of path" in {
     touch(tmpPath)
     tmpPath should exist

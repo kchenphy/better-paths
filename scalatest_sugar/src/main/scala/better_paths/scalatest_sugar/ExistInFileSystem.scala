@@ -3,7 +3,6 @@ package better_paths.scalatest_sugar
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.scalatest.enablers.Existence
 
-
 trait ExistInFileSystem {
 
   /** Enables syntax such as the following:
@@ -18,7 +17,8 @@ trait ExistInFileSystem {
     * @param fs [[FileSystem]] of interest
     * @return an [[Existence]] instance to be used together with [[org.scalatest.words.MatcherWords#exist]].
     */
-  implicit def existence(implicit fs: FileSystem): Existence[Path] = new Existence[Path] {
-    override def exists(thing: Path): Boolean = fs.exists(thing)
-  }
+  implicit def existence(implicit fs: FileSystem): Existence[Path] =
+    new Existence[Path] {
+      override def exists(thing: Path): Boolean = fs.exists(thing)
+    }
 }

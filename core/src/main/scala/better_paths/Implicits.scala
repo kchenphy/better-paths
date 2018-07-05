@@ -43,7 +43,8 @@ trait Implicits {
   implicit class PathStructureOps(path: Path) {
     def parent: Path = path.getParent
 
-    def children(implicit fs: FileSystem): Array[Path] = fs.listStatus(path).map(_.getPath)
+    def children(implicit fs: FileSystem): Array[Path] =
+      fs.listStatus(path).map(_.getPath)
   }
 
   implicit class PathAttributeOps(path: Path)(implicit fs: FileSystem) {
@@ -61,25 +62,34 @@ trait Implicits {
   }
 
   implicit class PathGlobOps(path: Path)(implicit fs: FileSystem) {
-    def globPath(pathFilter: PathFilter): Array[Path] = fs.globStatus(path, pathFilter).map(_.getPath)
+    def globPath(pathFilter: PathFilter): Array[Path] =
+      fs.globStatus(path, pathFilter).map(_.getPath)
 
     def globDirectories: Array[Path] = globPath(IsDirectory)
 
     def globFiles: Array[Path] = globPath(IsFile)
 
-    def listPath(pathFilter: PathFilter): Array[Path] = fs.listStatus(path, pathFilter).map(_.getPath)
+    def listPath(pathFilter: PathFilter): Array[Path] =
+      fs.listStatus(path, pathFilter).map(_.getPath)
 
     def listDirectories: Array[Path] = listPath(IsDirectory)
 
     def listFiles: Array[Path] = listPath(IsFile)
   }
 
-  implicit class PathContent(path: Path)(implicit fs: FileSystem, charset: Charset = StandardCharsets.UTF_8) {
+  implicit class PathContent(
+      path: Path
+    )(implicit
+      fs: FileSystem,
+      charset: Charset = StandardCharsets.UTF_8) {
     def contentAsString: String =
       IOUtils.toString(fs.open(path), charset)
 
     def lines: Seq[String] =
-      newBufferedReader(fs.open(path)).lines().collect(Collectors.toList()).asScala
+      newBufferedReader(fs.open(path))
+        .lines()
+        .collect(Collectors.toList())
+        .asScala
 
     def lineIterator: Iterator[String] =
       newBufferedReader(fs.open(path)).lines().iterator().asScala
@@ -91,12 +101,16 @@ trait Implicits {
     }
 
     def <(line: String): Path = {
-      managed(fs.create(path, true)).acquireAndGet { _.write(line.getBytes(charset)) }
+      managed(fs.create(path, true)).acquireAndGet {
+        _.write(line.getBytes(charset))
+      }
       path
     }
 
     def <<(line: String): Path = {
-      managed(fs.append(touch(path))).acquireAndGet { _.write(line.getBytes(charset)) }
+      managed(fs.append(touch(path))).acquireAndGet {
+        _.write(line.getBytes(charset))
+      }
       path
     }
 

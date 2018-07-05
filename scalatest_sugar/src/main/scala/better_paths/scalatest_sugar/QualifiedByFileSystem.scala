@@ -21,7 +21,7 @@ trait QualifiedByFileSystem {
   def qualifiedBy(fs: FileSystem): Uniformity[Path] = new Uniformity[Path] {
     override def normalizedOrSame(b: Any): Any = b match {
       case p: Path => fs.makeQualified(p)
-      case _ => b
+      case _       => b
     }
     override def normalizedCanHandle(b: Any): Boolean = b.isInstanceOf[Path]
     override def normalized(a: Path): Path = fs.makeQualified(a)

@@ -25,7 +25,11 @@ object AddTry {
           """
         }
 
-        case _ => c.abort(c.enclosingPosition, "Annotation @AddTry can be used only with methods")
+        case _ =>
+          c.abort(
+            c.enclosingPosition,
+            "Annotation @AddTry can be used only with methods"
+          )
       }
     }
 
