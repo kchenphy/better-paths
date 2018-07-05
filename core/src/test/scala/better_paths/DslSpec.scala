@@ -8,7 +8,7 @@ import better_paths.scalatest_sugar.PathSugar
 import org.apache.hadoop.fs.Path
 import org.scalatest._
 
-class DslTest extends FlatSpec with Matchers with TempPathProvider with PathSugar
+class DslSpec extends FlatSpec with Matchers with TempPathProvider with PathSugar
   with TestMiniDFSCluster with Inspectors {
 
   "touch" should "create a zero-length file only when file is non-existing, or do nothing if file already exists" in {
@@ -58,12 +58,6 @@ class DslTest extends FlatSpec with Matchers with TempPathProvider with PathSuga
       delete(tmpPath, recursive = false)
     }
   }
-
-//  "<" should "correctly write content into file" in {
-//    val path = tmpPath / "a"
-//    path < "some content"
-//    path.contentAsString() shouldBe "some content"
-//  }
 //
 //  "<<" should "correctly append content to file, even when path does not exist" in {
 //    val path = tmpPath / "a"
