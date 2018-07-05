@@ -5,6 +5,10 @@ import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher}
 
 abstract class PathPredicate(val name: String) {
   def apply(path: Path)(implicit fs: FileSystem): Boolean
+
+  /** Enables pattern matching.
+    */
+  def unapply(path: Path)(implicit fs: FileSystem): Boolean = apply(path)
 }
 
 object PathPredicate {

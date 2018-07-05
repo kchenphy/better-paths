@@ -27,6 +27,10 @@ class PathAttributeSpec extends FlatSpec with Matchers with TestMiniDFSCluster w
     touchz(tmpPath / "a" / "b")
 
     tmpPath / "a" should be a directory
+    // or equivalently
+    tmpPath / "a" should matchPattern {
+      case IsDirectory() => ()
+    }
     tmpPath / "a" shouldNot be a file
     tmpPath / "a" / "b" shouldNot be a directory
     tmpPath / "a" / "b" should be a file
