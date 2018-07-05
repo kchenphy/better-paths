@@ -10,17 +10,17 @@ class PathGlobSpec extends FlatSpec with Matchers with TestMiniDFSCluster with T
   with TableDrivenPropertyChecks {
 
   "list/glob" should "collect correct results" in {
-    touchz(tmpPath / "a/b/c")
-    touchz(tmpPath / "a/d")
-    mkdirs(tmpPath / "a/e")
+    touchz(tmpPath / "b" / "c")
+    touchz(tmpPath / "d")
+    mkdirs(tmpPath / "e")
 
     val testCases = Table(
       ("actual", "expected"),
-      ((tmpPath / "a").listDirectories, List(tmpPath / "a/e", tmpPath / "a/b")),
-      ((tmpPath / "a").listFiles, List(tmpPath / "a/d")),
-      ((tmpPath / "a/*").globFiles, List(tmpPath / "a/d")),
-      ((tmpPath / "a/*").globDirectories, List(tmpPath / "a/e", tmpPath / "a/b")),
-      ((tmpPath / "a/*/c").globFiles, List(tmpPath / "a/b/c"))
+      (tmpPath.listDirectories, List(tmpPath / "e", tmpPath / "b")),
+      (tmpPath.listFiles, List(tmpPath / "d")),
+      ((tmpPath / "*").globFiles, List(tmpPath / "d")),
+      ((tmpPath / "*").globDirectories, List(tmpPath / "e", tmpPath / "b")),
+      ((tmpPath / "*" / "c").globFiles, List(tmpPath / "b" / "c"))
     )
 
     forAll(testCases) {

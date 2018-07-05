@@ -7,25 +7,20 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class PathAttributeSpec extends FlatSpec with Matchers with TestMiniDFSCluster with TempPathProvider with PathSugar {
   "exists" should "correctly return existence of path" in {
-    val existing = tmpPath / "a" / "b"
-    mkdirs(existing)
+    touch(tmpPath)
+    tmpPath should exist
 
     val nonExisting = tmpPath / "a" / "c"
-    existing should exist
     nonExisting shouldNot exist
   }
 
   "status" should "correctly return status of path" in {
-    val path = tmpPath / "a"
-    touch(path)
-    path.status shouldBe fs.getFileStatus(path)
+    touch(tmpPath)
+    tmpPath.status shouldBe fs.getFileStatus(tmpPath)
   }
 
-
   "length" should "correctly return length of path" in {
-    val path = tmpPath / "a"
-    path < "abc"
-    path.length shouldBe "abc".length
+    (tmpPath < "abc").length shouldBe "abc".length
   }
 
   "isFile/isDirectory/isSymlink" should "correctly detect the type of path" in {
