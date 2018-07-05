@@ -1,6 +1,6 @@
 package better_paths
 
-import java.io.{BufferedReader, InputStream, InputStreamReader}
+import java.io.{BufferedReader, InputStreamReader}
 import java.nio.charset.{Charset, StandardCharsets}
 import java.util.stream.Collectors
 
@@ -85,20 +85,19 @@ trait Implicits {
     def contentAsString: String =
       IOUtils.toString(fs.open(path), charset)
 
-    def lines: Seq[String] =
-      newBufferedReader(fs.open(path))
-        .lines()
-        .collect(Collectors.toList())
-        .asScala
-
-    def lineIterator: Iterator[String] =
-      newBufferedReader(fs.open(path)).lines().iterator().asScala
-
-    private def newBufferedReader(inputStream: InputStream): BufferedReader = {
+    def newBufferedReader: BufferedReader = {
       val decoder = charset.newDecoder
-      val reader = new InputStreamReader(inputStream, decoder)
+      val reader = new InputStreamReader(fs.open(path), decoder)
       new BufferedReader(reader)
     }
+
+    def lines: Seq[String] =
+      managed(newBufferedReader).acquireAndGet {
+        _.lines().collect(Collectors.toList())
+      }.asScala
+
+    def lineIterator: Iterator[String] =
+      newBufferedReader.lines().iterator().asScala
 
     def <(line: String): Path = {
       managed(fs.create(path, true)).acquireAndGet {
