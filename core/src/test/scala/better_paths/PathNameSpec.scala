@@ -33,7 +33,6 @@ class PathNameSpec extends FlatSpec with Matchers with TestMiniDFSCluster with T
 
     touchz(tmpPath / "c")
     ln(tmpPath / "d", tmpPath / "c")
-    val status = (tmpPath / "d").status
     tmpPath / "d" should be a symlink
   }
 }
