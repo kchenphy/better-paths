@@ -7,7 +7,12 @@ import better_paths.common.{TempPathProvider, TestMiniDFSCluster}
 import better_paths.scalatest_sugar.PathSugar
 import org.scalatest.{FlatSpec, Matchers}
 
-class PathContentSpec extends FlatSpec with Matchers with TestMiniDFSCluster with TempPathProvider with PathSugar {
+class PathContentSpec
+    extends FlatSpec
+    with Matchers
+    with TestMiniDFSCluster
+    with TempPathProvider
+    with PathSugar {
 
   "contentAsString/lines/lineIterator" should "return correct paths respectively" in {
     tmpPath << "first line" << "\n" << "second line"

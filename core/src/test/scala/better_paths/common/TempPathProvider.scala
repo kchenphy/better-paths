@@ -9,6 +9,7 @@ trait TempPathProvider extends BeforeAndAfterEach {
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    tmpPath = new Path(System.getProperty("java.io.tmpdir"), System.nanoTime().toString)
+    tmpPath =
+      new Path(System.getProperty("java.io.tmpdir"), System.nanoTime().toString)
   }
 }
