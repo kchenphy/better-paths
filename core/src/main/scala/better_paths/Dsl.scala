@@ -1,34 +1,8 @@
 package better_paths
 
-import java.nio.charset.{Charset, StandardCharsets}
-
 import org.apache.hadoop.fs.{FileSystem, Path}
-import resource.managed
 
 object Dsl {
-
-  implicit class IOOperations(path: Path)(implicit fs: FileSystem) {
-    def <(line: String)(implicit charset: Charset = StandardCharsets.UTF_8): Path = {
-      managed(fs.create(path, true)).acquireAndGet { _.write(line.getBytes(charset)) }
-      path
-    }
-
-    def <<(line: String)(implicit charset: Charset = StandardCharsets.UTF_8): Path = {
-      managed(fs.append(touch(path))).acquireAndGet { _.write(line.getBytes(charset)) }
-      path
-    }
-
-    def `>:`(line: String)(implicit charset: Charset = StandardCharsets.UTF_8): Unit =
-      <(line)
-
-    // TODO: should we use copyMerge instead of concat?
-    def <|(paths: Seq[Path]): Path = {
-      fs.concat(touch(path), paths.toArray)
-      path
-    }
-
-    def |>:(paths: Seq[Path]): Unit = <|(paths)
-  }
 
   @AddTry
   def delete(path: Path, recursive: Boolean = true)(implicit fs: FileSystem): Path = {
