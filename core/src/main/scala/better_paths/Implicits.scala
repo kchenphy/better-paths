@@ -30,6 +30,8 @@ trait Implicits {
     def /(child: String): Path = new Path(path, child)
 
     def /(child: Path): Path = new Path(path, child)
+
+    def /(child: Symbol): Path = new Path(path, child.name)
   }
 
   implicit class PathNameOps(path: Path) {
