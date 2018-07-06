@@ -33,6 +33,14 @@ object Dsl {
   }
 
   @AddTry
-  def ln(link: Path, target: Path)(implicit fs: FileSystem): Unit =
+  def ln(link: Path, target: Path)(implicit fs: FileSystem): Path = {
     fs.createSymlink(target, link, true)
+    link
+  }
+
+  @AddTry
+  def concat(src: Seq[Path], dst: Path)(implicit fs: FileSystem): Path = {
+    fs.concat(touch(dst), src.toArray)
+    dst
+  }
 }
