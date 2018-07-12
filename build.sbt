@@ -1,8 +1,16 @@
 val hadoopVersion: String = "2.8.3"
 val scalatestVersion: String = "3.0.5"
 
-lazy val formatAll   = taskKey[Unit]("Format all the source code which includes src, test, and build files")
+lazy val formatAll = taskKey[Unit]("Format all the source code which includes src, test, and build files")
 lazy val checkFormat = taskKey[Unit]("Check all the source code which includes src, test, and build files")
+
+// Do not publish aggregate project, but need to keep publishTo setting so sbt-pgp is happy.
+publishArtifact := false
+publishTo := Some(if (isSnapshot.value) Opts.resolver.sonatypeSnapshots else Opts.resolver.sonatypeStaging)
+
+lazy val publishSettings = Seq(
+  publishTo := Some(if (isSnapshot.value) Opts.resolver.sonatypeSnapshots else Opts.resolver.sonatypeStaging),
+)
 
 lazy val commonSettings = Seq(
   organization := "com.github.kchenphy",
@@ -13,6 +21,7 @@ lazy val commonSettings = Seq(
     "org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full
   ),
 
+  publishTo := sonatypePublishTo.value,
   compile in Compile := (compile in Compile).dependsOn(formatAll).value,
   test in Test := (test in Test).dependsOn(checkFormat).value,
 
@@ -29,7 +38,7 @@ lazy val commonSettings = Seq(
 )
 
 def scalatestDeps(
-    scalatestVersion: String = scalatestVersion
+  scalatestVersion: String = scalatestVersion
 )(conf: Configuration = Test) =
   Seq(
     "org.scalactic" %% "scalactic" % scalatestVersion,
@@ -43,8 +52,8 @@ def miniClusterDependencies(hadoopVersion: String = hadoopVersion) = Seq(
 
 lazy val macros = project
   .in(file("macros"))
+  .settings(commonSettings : _*)
   .settings(
-    commonSettings,
     scalaVersion := "2.11.7",
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
@@ -55,8 +64,8 @@ lazy val macros = project
 lazy val common = project
   .in(file("common"))
   .dependsOn(macros)
+  .settings(commonSettings: _*)
   .settings(
-    commonSettings,
     publishArtifact := false,
     libraryDependencies ++= scalatestDeps(scalatestVersion)(Compile),
     scalacOptions ++= Seq("-Xexperimental")
@@ -65,8 +74,9 @@ lazy val common = project
 lazy val testSugar = project
   .in(file("scalatest_sugar"))
   .dependsOn(common)
+  .settings(publishSettings: _*)
+  .settings(commonSettings: _*)
   .settings(
-    commonSettings,
     name := "better-paths-scalatest-sugar",
     libraryDependencies ++= scalatestDeps(scalatestVersion)(Compile)
   )
@@ -74,8 +84,9 @@ lazy val testSugar = project
 lazy val core = project
   .in(file("core"))
   .dependsOn(testSugar, common)
+  .settings(publishSettings: _*)
+  .settings(commonSettings: _*)
   .settings(
-    commonSettings,
     name := "better-paths-core",
     libraryDependencies ++= scalatestDeps()()
       ++ Seq("com.jsuereth" %% "scala-arm" % "2.0")
