@@ -11,7 +11,7 @@ import resource.managed
 
 import scala.collection.JavaConverters._
 
-trait Implicits {
+trait Implicits extends PathBuilder.Implicits {
 
   /** Path interpolations, enabling syntax like:
     *
@@ -24,14 +24,6 @@ trait Implicits {
     */
   implicit class PathInterpolations(sc: StringContext) {
     def p(args: Any*): Path = new Path(sc.s(args: _*))
-  }
-
-  implicit class PathBuilderOps(path: Path) {
-    def /(child: String): Path = new Path(path, child)
-
-    def /(child: Path): Path = new Path(path, child)
-
-    def /(child: Symbol): Path = new Path(path, child.name)
   }
 
   implicit class PathNameOps(path: Path) {
