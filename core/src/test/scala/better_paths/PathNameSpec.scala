@@ -12,6 +12,7 @@ class PathNameSpec
     with TestMiniDFSCluster
     with TempPathProvider
     with PathSugar {
+
   "basename" should "correctly return basename" in {
     val path = new Path("a") / "b"
     path.basename shouldBe "b"
