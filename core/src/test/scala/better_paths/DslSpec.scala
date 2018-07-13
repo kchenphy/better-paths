@@ -2,7 +2,7 @@ package better_paths
 
 import java.io.IOException
 
-import better_paths.Dsl.{delete, mkdirs, touch, touchz}
+import better_paths.Dsl._
 import better_paths.common.{TempPathProvider, TestMiniDFSCluster}
 import better_paths.scalatest_sugar.PathSugar
 import org.apache.hadoop.fs.Path
@@ -63,18 +63,11 @@ class DslSpec
       delete(tmpPath, recursive = false)
     }
   }
-//
-//  "<<" should "correctly append content to file, even when path does not exist" in {
-//    val path = tmpPath / "a"
-//    path << "some content"
-//    path.contentAsString() shouldBe "some content"
-//  }
-//
-//  "<|" should "correctly merge files" in {
-//    (tmpPath / "a") < "some content\n"
-//    (tmpPath / "b") < "some other content"
-//    tmpPath.listFiles |>: (tmpPath / "merged")
-//    (tmpPath / "merged").contentAsString() shouldBe "some content\nsome other content"
-//  }
 
+  "concat" should "correctly concat files" in {
+    (tmpPath / "a") < "some content"
+    (tmpPath / "b") < "some other content"
+    concat(tmpPath.listFiles, tmpPath / "merged")
+    (tmpPath / "merged").contentAsString shouldBe "some contentsome other content"
+  }
 }

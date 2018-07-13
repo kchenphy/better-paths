@@ -106,15 +106,5 @@ trait Implicits extends PathBuilder.Implicits {
       }
       path
     }
-
-    def `>:`(line: String): Unit = <(line)
-
-    // TODO: should we use copyMerge instead of concat?
-    def <|(paths: Seq[Path]): Path = {
-      fs.concat(touch(path), paths.toArray)
-      path
-    }
-
-    def |>:(paths: Seq[Path]): Unit = <|(paths)
   }
 }
