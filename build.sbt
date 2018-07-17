@@ -45,10 +45,10 @@ def scalatestDeps(
     "org.scalatest" %% "scalatest" % scalatestVersion
   ).map(_ % conf)
 
-def miniClusterDependencies(hadoopVersion: String = hadoopVersion) = Seq(
-  "org.apache.hadoop" % "hadoop-hdfs" % hadoopVersion % Test classifier "" classifier "tests",
-  "org.apache.hadoop" % "hadoop-minicluster" % hadoopVersion % Test
-)
+def miniClusterDependencies(hadoopVersion: String = hadoopVersion)(conf: Configuration = Test) = Seq(
+  "org.apache.hadoop" % "hadoop-hdfs" % hadoopVersion classifier "" classifier "tests",
+  "org.apache.hadoop" % "hadoop-minicluster" % hadoopVersion
+).map(_ % conf)
 
 lazy val macros = project
   .in(file("macros"))
@@ -67,7 +67,7 @@ lazy val common = project
   .settings(commonSettings: _*)
   .settings(
     publishArtifact := false,
-    libraryDependencies ++= scalatestDeps(scalatestVersion)(Compile),
+    libraryDependencies ++= scalatestDeps(scalatestVersion)(Compile) ++ miniClusterDependencies()(Compile),
     scalacOptions ++= Seq("-Xexperimental")
   )
 
@@ -90,5 +90,5 @@ lazy val core = project
     name := "better-paths-core",
     libraryDependencies ++= scalatestDeps()()
       ++ Seq("com.jsuereth" %% "scala-arm" % "2.0")
-      ++ miniClusterDependencies()
+      ++ miniClusterDependencies()(Test)
   )
