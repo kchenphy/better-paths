@@ -5,4 +5,6 @@ trait PathSugar
     with ExistInFileSystem
     with PathPropertyMatcher
     with PathEmptiness
+    with PathContaining
+
 object PathSugar extends PathSugar

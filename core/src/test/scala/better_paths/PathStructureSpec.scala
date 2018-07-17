@@ -14,6 +14,7 @@ class PathStructureSpec
   "parent/children" should "return correct results" in {
     val child1 = tmpPath / "a"
     val child2 = tmpPath / "b"
+    val nonChild = "c"
     mkdirs(child1)
     mkdirs(child2)
 
@@ -21,6 +22,10 @@ class PathStructureSpec
       after being qualified)
     child1.parent shouldBe tmpPath
     child2.parent shouldBe tmpPath
-  }
 
+    tmpPath.contains(child1) shouldBe true
+    tmpPath should contain(child1)
+    tmpPath should contain(child2)
+    tmpPath shouldNot contain(nonChild)
+  }
 }
