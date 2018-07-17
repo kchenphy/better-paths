@@ -1,4 +1,4 @@
-package better_paths.scalatest_sugar
+package better_paths.pavement
 
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.scalatest.enablers.Containing

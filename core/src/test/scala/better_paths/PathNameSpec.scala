@@ -1,7 +1,7 @@
 package better_paths
 
 import better_paths.Dsl.{ln, mkdirs, touchz}
-import better_paths.scalatest_sugar.PathSugar
+import better_paths.pavement.Pavement
 import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
 import org.apache.hadoop.fs.Path
 import org.scalatest.{FlatSpec, Matchers}
@@ -11,7 +11,7 @@ class PathNameSpec
     with Matchers
     with TestMiniDFSCluster
     with TempPathProvider
-    with PathSugar {
+    with Pavement {
 
   "basename" should "correctly return basename" in {
     val path = new Path("a") / "b"
