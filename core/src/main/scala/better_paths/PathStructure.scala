@@ -10,6 +10,9 @@ object PathStructure {
 
       def children(implicit fs: FileSystem): Array[Path] =
         fs.listStatus(path).map(_.getPath)
+
+      def contains(child: Path)(implicit fs: FileSystem): Boolean =
+        fs.makeQualified(child.parent) == fs.makeQualified(path)
     }
   }
 
