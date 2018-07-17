@@ -1,4 +1,4 @@
-package better_paths.common
+package better_paths.test_utils
 
 import org.apache.hadoop.fs.Path
 import org.scalatest.{BeforeAndAfterEach, Suite}

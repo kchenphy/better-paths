@@ -1,7 +1,7 @@
 package better_paths
 
 import Dsl._
-import common.{TempPathProvider, TestMiniDFSCluster}
+import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
 import scalatest_sugar.PathSugar
 import org.scalatest.{FlatSpec, Matchers}
 

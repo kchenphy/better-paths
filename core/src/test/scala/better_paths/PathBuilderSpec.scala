@@ -1,9 +1,9 @@
 package better_paths
 
-import Dsl._
-import PathBuilder._
-import common.{TempPathProvider, TestMiniDFSCluster}
-import scalatest_sugar.PathSugar
+import better_paths.Dsl._
+import better_paths.PathBuilder._
+import better_paths.scalatest_sugar.PathSugar
+import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
 import org.apache.hadoop.fs.Path
 import org.scalatest.{FlatSpec, Matchers}
 

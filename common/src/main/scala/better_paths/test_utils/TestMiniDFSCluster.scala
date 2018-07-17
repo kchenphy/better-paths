@@ -1,4 +1,4 @@
-package better_paths.common
+package better_paths.test_utils
 
 import java.nio.file.Files
 
