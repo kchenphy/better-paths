@@ -70,10 +70,10 @@ p.status                                                  // what is the FileSta
 p.length                                                  // and what is the length?
 ```
 
-# `PathSugar` for writing meaningful/readable unit tests in `scalatest`
+## `PathSugar` for writing meaningful/readable unit tests in `scalatest`
 In addition, `PathSguar` is provided to make `scalatest` with Hadoop Path easier.
 
-## qualified and qualifiedBy
+### Qualified and qualifiedBy
 ```scala
 import better_paths.PathSugar._
 
@@ -86,7 +86,7 @@ val full = "http://namenode:port/a/b"
 (unqualified should be full) (after being qualifiedBy(fs))
 ```
 
-## existence
+### Existence
 ```scala
 val path = "a/b"
 touch(path)
@@ -94,7 +94,7 @@ touch(path)
 path should exist
 ```
 
-## emptiness
+### Emptiness
 ```scala
 // assert file is empty
 val emptyFile = "a/b"
@@ -107,7 +107,7 @@ mkdir(emptyDirectory)
 emptyDirectory should be empty
 ```
 
-## type check
+### Type check
 ```scala
 val filePath = "a/b"
 val dirPath = "a/c"
