@@ -2,7 +2,7 @@ package better_paths
 
 import Dsl._
 import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
-import scalatest_sugar.PathSugar
+import pavement.Pavement
 import org.scalatest.{FlatSpec, Matchers}
 
 class PathAttributeSpec
@@ -10,7 +10,7 @@ class PathAttributeSpec
     with Matchers
     with TestMiniDFSCluster
     with TempPathProvider
-    with PathSugar {
+    with Pavement {
   "exists" should "correctly return existence of path" in {
     touch(tmpPath)
     tmpPath should exist

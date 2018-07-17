@@ -71,19 +71,19 @@ lazy val common = project
     scalacOptions ++= Seq("-Xexperimental")
   )
 
-lazy val testSugar = project
-  .in(file("scalatest_sugar"))
+lazy val pavement = project
+  .in(file("pavement"))
   .dependsOn(common)
   .settings(publishSettings: _*)
   .settings(commonSettings: _*)
   .settings(
-    name := "better-paths-scalatest-sugar",
+    name := "better-paths-pavement",
     libraryDependencies ++= scalatestDeps(scalatestVersion)(Compile)
   )
 
 lazy val core = project
   .in(file("core"))
-  .dependsOn(testSugar, common)
+  .dependsOn(pavement, common)
   .settings(publishSettings: _*)
   .settings(commonSettings: _*)
   .settings(

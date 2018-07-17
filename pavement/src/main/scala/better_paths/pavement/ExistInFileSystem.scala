@@ -1,4 +1,4 @@
-package better_paths.scalatest_sugar
+package better_paths.pavement
 
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.scalatest.enablers.Existence
@@ -14,8 +14,8 @@ trait ExistInFileSystem {
     * path should exist
     * </pre>
     *
-    * @param fs [[FileSystem]] of interest
-    * @return an [[Existence]] instance to be used together with [[org.scalatest.words.MatcherWords#exist]].
+    * @param fs [[org.apache.hadoop.fs.FileSystem]] of interest
+    * @return an [[org.scalatest.enablers.Existence]] instance to be used together with [[org.scalatest.words.MatcherWords#exist]].
     */
   implicit def existence(implicit fs: FileSystem): Existence[Path] =
     new Existence[Path] {

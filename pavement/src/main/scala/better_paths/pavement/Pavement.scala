@@ -1,10 +1,10 @@
-package better_paths.scalatest_sugar
+package better_paths.pavement
 
-trait PathSugar
+trait Pavement
     extends QualifiedByFileSystem
     with ExistInFileSystem
     with PathPropertyMatcher
     with PathEmptiness
     with PathContaining
 
-object PathSugar extends PathSugar
+object Pavement extends Pavement

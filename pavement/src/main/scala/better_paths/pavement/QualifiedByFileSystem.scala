@@ -1,11 +1,11 @@
-package better_paths.scalatest_sugar
+package better_paths.pavement
 
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.scalactic.Uniformity
 
 trait QualifiedByFileSystem {
 
-  /** Enables equality test of [[Path]], based on qualified value. For example:
+  /** Enables equality test of [[org.apache.hadoop.fs.Path]], based on qualified value. For example:
     *
     * <pre class="stHighlight">
     *   val localFs: LocalFileSystem = ???
@@ -15,8 +15,8 @@ trait QualifiedByFileSystem {
     *   path should equal samePath (after being qualifiedBy(localFs))
     * </pre>
     *
-    * @param fs: [[FileSystem]] of interest
-    * @return a [[Uniformity]] instance to be used together with equality test
+    * @param fs : [[org.apache.hadoop.fs.FileSystem]] of interest
+    * @return a [[org.scalactic.Uniformity]] instance to be used together with equality test
     */
   def qualifiedBy(fs: FileSystem): Uniformity[Path] = new Uniformity[Path] {
     override def normalizedOrSame(b: Any): Any = b match {
