@@ -6,5 +6,6 @@ trait Pavement
     with PathPropertyMatcher
     with PathEmptiness
     with PathContaining
+    with PathLength
 
 object Pavement extends Pavement

@@ -79,6 +79,7 @@ lazy val pavement = project
   .settings(
     name := "better-paths-pavement",
     libraryDependencies ++= scalatestDeps(scalatestVersion)(Compile)
+      ++ Seq("com.jsuereth" %% "scala-arm" % "2.0")
   )
 
 lazy val core = project
