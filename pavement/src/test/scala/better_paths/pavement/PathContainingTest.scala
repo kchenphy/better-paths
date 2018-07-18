@@ -1,6 +1,5 @@
-package better_paths.scalatest_sugar
+package better_paths.pavement
 
-import better_paths.pavement.PathContaining
 import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
 import org.apache.hadoop.fs.Path
 import org.scalatest.enablers.Containing
