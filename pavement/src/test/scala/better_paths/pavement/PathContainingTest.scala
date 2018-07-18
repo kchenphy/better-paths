@@ -16,8 +16,8 @@ class PathContainingTest
 
     val child1 = new Path(tmpPath, "a")
     val child2 = new Path(tmpPath, "b")
-    fs.create(child1)
-    fs.create(child2)
+    fs.create(child1).close()
+    fs.create(child2).close()
 
     val nonChild = new Path(tmpPath, "c")
 
