@@ -4,6 +4,19 @@ val scalatestVersion: String = "3.0.5"
 lazy val formatAll = taskKey[Unit]("Format all the source code which includes src, test, and build files")
 lazy val checkFormat = taskKey[Unit]("Check all the source code which includes src, test, and build files")
 
+def scalatestDeps(
+  scalatestVersion: String = scalatestVersion
+)(conf: Configuration = Test) =
+  Seq(
+    "org.scalactic" %% "scalactic" % scalatestVersion,
+    "org.scalatest" %% "scalatest" % scalatestVersion
+  ).map(_ % conf)
+
+def miniClusterDependencies(hadoopVersion: String = hadoopVersion)(conf: Configuration = Test) = Seq(
+  "org.apache.hadoop" % "hadoop-hdfs" % hadoopVersion classifier "" classifier "tests",
+  "org.apache.hadoop" % "hadoop-minicluster" % hadoopVersion
+).map(_ % conf)
+
 // Do not publish aggregate project, but need to keep publishTo setting so sbt-pgp is happy.
 publishArtifact := false
 publishTo := Some(if (isSnapshot.value) Opts.resolver.sonatypeSnapshots else Opts.resolver.sonatypeStaging)
@@ -16,7 +29,11 @@ lazy val commonSettings = Seq(
   organization := "com.github.kchenphy",
   version := "1.0-SNAPSHOT",
   scalaVersion := "2.11.7",
-  libraryDependencies += "org.apache.hadoop" % "hadoop-common" % hadoopVersion % Provided classifier "" classifier "tests",
+  libraryDependencies ++= Seq(
+    "org.apache.hadoop" % "hadoop-common" % hadoopVersion % Provided classifier "" classifier "tests",
+    "com.jsuereth" %% "scala-arm" % "2.0"
+  ),
+
   addCompilerPlugin(
     "org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full
   ),
@@ -36,19 +53,6 @@ lazy val commonSettings = Seq(
     (scalafmtSbtCheck in Compile).value
   }
 )
-
-def scalatestDeps(
-  scalatestVersion: String = scalatestVersion
-)(conf: Configuration = Test) =
-  Seq(
-    "org.scalactic" %% "scalactic" % scalatestVersion,
-    "org.scalatest" %% "scalatest" % scalatestVersion
-  ).map(_ % conf)
-
-def miniClusterDependencies(hadoopVersion: String = hadoopVersion)(conf: Configuration = Test) = Seq(
-  "org.apache.hadoop" % "hadoop-hdfs" % hadoopVersion classifier "" classifier "tests",
-  "org.apache.hadoop" % "hadoop-minicluster" % hadoopVersion
-).map(_ % conf)
 
 lazy val macros = project
   .in(file("macros"))
@@ -79,7 +83,6 @@ lazy val pavement = project
   .settings(
     name := "better-paths-pavement",
     libraryDependencies ++= scalatestDeps(scalatestVersion)(Compile)
-      ++ Seq("com.jsuereth" %% "scala-arm" % "2.0")
   )
 
 lazy val core = project
@@ -90,6 +93,5 @@ lazy val core = project
   .settings(
     name := "better-paths-core",
     libraryDependencies ++= scalatestDeps()()
-      ++ Seq("com.jsuereth" %% "scala-arm" % "2.0")
       ++ miniClusterDependencies()(Test)
   )
