@@ -12,7 +12,7 @@ object PathStructure {
         fs.listStatus(path).map(_.getPath)
 
       def contains(child: Path)(implicit fs: FileSystem): Boolean =
-        fs.makeQualified(child.parent) == fs.makeQualified(path)
+        PathContains(path, child)
     }
   }
 

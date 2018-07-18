@@ -1,5 +1,6 @@
 package better_paths.pavement
 
+import better_paths.PathContains
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.scalatest.enablers.Containing
 
@@ -10,10 +11,8 @@ trait PathContaining {
 
       override def contains(container: Path, element: Any): Boolean =
         element match {
-          case child: Path =>
-            fs.listStatus(container)
-              .exists(_.getPath == fs.makeQualified(child))
-          case _ => false
+          case child: Path => PathContains(container, child)
+          case _           => false
         }
 
       override def containsOneOf(container: Path, elements: Seq[Any]): Boolean =

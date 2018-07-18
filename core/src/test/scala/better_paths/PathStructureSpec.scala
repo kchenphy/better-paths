@@ -11,10 +11,12 @@ class PathStructureSpec
     with TestMiniDFSCluster
     with TempPathProvider
     with Pavement {
+
   "parent/children" should "return correct results" in {
     val child1 = tmpPath / "a"
     val child2 = tmpPath / "b"
-    val nonChild = "c"
+    val nonChild1 = tmpPath / "d"
+    val nonChild2 = "c"
     mkdirs(child1)
     mkdirs(child2)
 
@@ -24,8 +26,10 @@ class PathStructureSpec
     child2.parent shouldBe tmpPath
 
     tmpPath.contains(child1) shouldBe true
+    tmpPath.contains(nonChild1) shouldBe false
     tmpPath should contain(child1)
     tmpPath should contain(child2)
-    tmpPath shouldNot contain(nonChild)
+    tmpPath shouldNot contain(nonChild1)
+    tmpPath shouldNot contain(nonChild2)
   }
 }
