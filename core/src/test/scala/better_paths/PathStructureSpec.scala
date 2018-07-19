@@ -1,6 +1,6 @@
 package better_paths
 
-import better_paths.Dsl.mkdirs
+import better_paths.Dsl._
 import better_paths.pavement.Pavement
 import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
 import org.scalatest.{FlatSpec, Matchers}
@@ -31,5 +31,19 @@ class PathStructureSpec
     tmpPath should contain(child2)
     tmpPath shouldNot contain(nonChild1)
     tmpPath shouldNot contain(nonChild2)
+  }
+
+  "walk" should "traverse in pre-order" in {
+    mkdirs(tmpPath / "b")
+    touch(tmpPath / "b" / "c")
+    touch(tmpPath / "b" / "d")
+    touch(tmpPath / "e")
+    touch(tmpPath / "f")
+
+    val actual = tmpPath.descendantsIterator.toList
+    val expected = List(".", "b", "b/c", "b/d", "e", "f").map(tmpPath / _)
+
+    (actual should contain theSameElementsInOrderAs expected)(
+      after being qualified)
   }
 }
