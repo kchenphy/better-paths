@@ -44,4 +44,10 @@ class PathBuilderSpec
   "home" should "return hadoop home directory" in {
     (home / 'a shouldEqual new Path("a"))(after being qualified)
   }
+
+  "pwd" should "return current working directory" in {
+    val p = (tmpPath / "abc").qualified
+    fs.setWorkingDirectory(p)
+    pwd shouldEqual p
+  }
 }
