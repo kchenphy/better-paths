@@ -23,6 +23,8 @@ object PathBuilder {
   def `*`(implicit fs: FileSystem): Path => Array[Path] =
     path => fs.listStatus(path).map(_.getPath)
 
+  def pwd(implicit fs: FileSystem): Path = fs.getWorkingDirectory
+
   def home(implicit fs: FileSystem): Path = fs.getHomeDirectory
 
   object Implicits extends Implicits
