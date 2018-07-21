@@ -2,7 +2,7 @@ package better_paths
 
 import java.io.IOException
 
-import better_paths.Dsl.{delete, mkdirs, touch, touchz}
+import better_paths.Dsl.{delete, mkdirs, touch, touchz, withWorkingDirectory}
 import better_paths.pavement.Pavement
 import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
 import org.apache.hadoop.fs.Path
@@ -62,6 +62,26 @@ class DslSpec
     intercept[IOException] {
       delete(tmpPath, recursive = false)
     }
+  }
+
+  "withWorkingDirectory" should "cause all action in a given directory, and upon exit reset current directory" in {
+    val oldDir = new Path(tmpPath, "old")
+    val newDir = new Path(tmpPath, "new")
+
+    fs.setWorkingDirectory(oldDir)
+
+    withWorkingDirectory(newDir) {
+      touch(new Path("someFile"))
+      mkdirs(new Path("someDirectory"))
+    }
+
+    fs.getWorkingDirectory shouldBe oldDir
+    fs.isFile(new Path(newDir, "someFile")) shouldBe true
+    fs.isDirectory(new Path(newDir, "someDirectory")) shouldBe true
+
+    fs.isFile(new Path(oldDir, "someFile")) shouldBe false
+    fs.isDirectory(new Path(oldDir, "someDirectory")) shouldBe false
+
   }
 //
 //  "<<" should "correctly append content to file, even when path does not exist" in {

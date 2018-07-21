@@ -35,4 +35,16 @@ object Dsl {
   @AddTry
   def ln(link: Path, target: Path)(implicit fs: FileSystem): Unit =
     fs.createSymlink(target, link, true)
+
+  def withWorkingDirectory[A](
+      path: Path
+    )(action: => A
+    )(implicit fs: FileSystem
+    ): A = {
+    val pwd = fs.getWorkingDirectory
+    fs.setWorkingDirectory(path)
+    val result = action
+    fs.setWorkingDirectory(pwd)
+    result
+  }
 }
