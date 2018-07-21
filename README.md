@@ -26,7 +26,7 @@ Structure
 ```scala                                                  
 p.parent                                                  // get the parent
 p.children                                                // list every path under p, same as p / `*`
-                                                          
+p.descendantsIterator                                     // get an Iterator[Path] that recursively visit each descendant                     
 ```                                                       
                                                           
 -------                                                   
