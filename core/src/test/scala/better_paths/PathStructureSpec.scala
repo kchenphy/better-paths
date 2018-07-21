@@ -33,7 +33,7 @@ class PathStructureSpec
     tmpPath shouldNot contain(nonChild2)
   }
 
-  "walk" should "traverse in pre-order" in {
+  "descendantsIterator" should "traverse descendants in pre-order" in {
     mkdirs(tmpPath / "b")
     touch(tmpPath / "b" / "c")
     touch(tmpPath / "b" / "d")
