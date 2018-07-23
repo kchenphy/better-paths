@@ -1,7 +1,6 @@
 package better_paths
 
 import better_paths.Dsl._
-import better_paths.PathBuilder._
 import better_paths.pavement.Pavement
 import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
 import org.apache.hadoop.fs.Path
@@ -39,15 +38,5 @@ class PathBuilderSpec
     (tmpPath / `*` should contain theSameElementsAs List(tmpPath / "a",
                                                          tmpPath / "b"))(
       after being qualified)
-  }
-
-  "home" should "return hadoop home directory" in {
-    (home / 'a shouldEqual new Path("a"))(after being qualified)
-  }
-
-  "pwd" should "return current working directory" in {
-    val p = (tmpPath / "abc").qualified
-    fs.setWorkingDirectory(p)
-    pwd shouldEqual p
   }
 }

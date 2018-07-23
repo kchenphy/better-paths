@@ -1,6 +1,6 @@
 package better_paths
 
-import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.fs.Path
 
 object PathBuilder {
 
@@ -15,17 +15,6 @@ object PathBuilder {
       def /[T](transformation: Function[Path, T]) = transformation.apply(path)
     }
   }
-
-  val `..` : Path => Path = _.getParent
-
-  val `.` : Path => Path = identity
-
-  def `*`(implicit fs: FileSystem): Path => Array[Path] =
-    path => fs.listStatus(path).map(_.getPath)
-
-  def pwd(implicit fs: FileSystem): Path = fs.getWorkingDirectory
-
-  def home(implicit fs: FileSystem): Path = fs.getHomeDirectory
 
   object Implicits extends Implicits
 }

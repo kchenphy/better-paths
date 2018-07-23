@@ -47,4 +47,15 @@ object Dsl {
     fs.setWorkingDirectory(pwd)
     result
   }
+
+  val `..` : Path => Path = _.getParent
+
+  val `.` : Path => Path = identity
+
+  def `*`(implicit fs: FileSystem): Path => Array[Path] =
+    path => fs.listStatus(path).map(_.getPath)
+
+  def pwd(implicit fs: FileSystem): Path = fs.getWorkingDirectory
+
+  def home(implicit fs: FileSystem): Path = fs.getHomeDirectory
 }

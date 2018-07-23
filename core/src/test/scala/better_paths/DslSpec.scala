@@ -2,7 +2,7 @@ package better_paths
 
 import java.io.IOException
 
-import better_paths.Dsl.{delete, mkdirs, touch, touchz, withWorkingDirectory}
+import better_paths.Dsl._
 import better_paths.pavement.Pavement
 import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
 import org.apache.hadoop.fs.Path
@@ -65,36 +65,32 @@ class DslSpec
   }
 
   "withWorkingDirectory" should "cause all action in a given directory, and upon exit reset current directory" in {
-    val oldDir = new Path(tmpPath, "old")
-    val newDir = new Path(tmpPath, "new")
+    val oldDir = tmpPath / "old"
+    val newDir = tmpPath / "new"
 
     fs.setWorkingDirectory(oldDir)
 
     withWorkingDirectory(newDir) {
-      touch(new Path("someFile"))
-      mkdirs(new Path("someDirectory"))
+      touch(p"someFile")
+      mkdirs(p"someDirectory")
     }
 
     fs.getWorkingDirectory shouldBe oldDir
-    fs.isFile(new Path(newDir, "someFile")) shouldBe true
-    fs.isDirectory(new Path(newDir, "someDirectory")) shouldBe true
 
-    fs.isFile(new Path(oldDir, "someFile")) shouldBe false
-    fs.isDirectory(new Path(oldDir, "someDirectory")) shouldBe false
-
+    newDir / "someFile" should be a file
+    newDir / "someDirectory" should be a directory
+    oldDir / "someFile" shouldNot exist
+    oldDir / "someDirectory" shouldNot exist
   }
-//
-//  "<<" should "correctly append content to file, even when path does not exist" in {
-//    val path = tmpPath / "a"
-//    path << "some content"
-//    path.contentAsString() shouldBe "some content"
-//  }
-//
-//  "<|" should "correctly merge files" in {
-//    (tmpPath / "a") < "some content\n"
-//    (tmpPath / "b") < "some other content"
-//    tmpPath.listFiles |>: (tmpPath / "merged")
-//    (tmpPath / "merged").contentAsString() shouldBe "some content\nsome other content"
-//  }
 
+  "home" should "return hadoop home directory" in {
+    home shouldBe fs.getHomeDirectory
+  }
+
+  "pwd" should "return current working directory" in {
+    val p = tmpPath / "abc"
+    withWorkingDirectory(p) {
+      pwd shouldEqual p
+    }
+  }
 }
