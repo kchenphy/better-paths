@@ -1,7 +1,7 @@
 package better_paths
 
 import better_paths.Dsl._
-import better_paths.pavement.Pavement
+import better_paths.path_sugar.PathSugar
 import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -10,7 +10,7 @@ class PathStructureSpec
     with Matchers
     with TestMiniDFSCluster
     with TempPathProvider
-    with Pavement {
+    with PathSugar {
 
   "parent/children" should "return correct results" in {
     val child1 = tmpPath / "a"

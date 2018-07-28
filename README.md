@@ -71,12 +71,12 @@ p.status                                                  // what is the FileSta
 p.length                                                  // and what is the length?
 ```
 
-## `Pavement` for writing meaningful/readable unit tests in `scalatest`
-In addition, `Pavement` is provided to make `scalatest` with Hadoop Path easier.
+## `PathSugar` for writing meaningful/readable unit tests in `scalatest`
+In addition, `PathSugar` is provided to make `scalatest` with Hadoop Path easier.
 
 ### Qualified and qualifiedBy
 ```scala
-import better_paths.pavement._
+import better_paths.path_sugar._
 
 val unqualified = "a/b"
 val full = "http://namenode:port/a/b"

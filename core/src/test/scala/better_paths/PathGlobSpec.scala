@@ -1,7 +1,7 @@
 package better_paths
 
 import better_paths.Dsl.{mkdirs, touchz}
-import better_paths.pavement.Pavement
+import better_paths.path_sugar.PathSugar
 import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.{FlatSpec, Matchers}
@@ -11,7 +11,7 @@ class PathGlobSpec
     with Matchers
     with TestMiniDFSCluster
     with TempPathProvider
-    with Pavement
+    with PathSugar
     with TableDrivenPropertyChecks {
 
   "list/glob" should "collect correct results" in {

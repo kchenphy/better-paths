@@ -1,4 +1,4 @@
-package better_paths.pavement
+package better_paths.path_sugar
 
 import better_paths.{IsDirectory, IsFile}
 import org.apache.hadoop.fs.{FileSystem, Path}
