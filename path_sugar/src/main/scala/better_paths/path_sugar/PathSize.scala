@@ -1,4 +1,4 @@
-package better_paths.pavement
+package better_paths.path_sugar
 
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.scalatest.enablers.Size

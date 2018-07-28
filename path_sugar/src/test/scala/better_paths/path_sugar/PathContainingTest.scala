@@ -1,4 +1,4 @@
-package better_paths.pavement
+package better_paths.path_sugar
 
 import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
 import org.apache.hadoop.fs.Path

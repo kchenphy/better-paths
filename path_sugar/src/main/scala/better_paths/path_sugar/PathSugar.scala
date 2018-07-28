@@ -1,6 +1,6 @@
-package better_paths.pavement
+package better_paths.path_sugar
 
-trait Pavement
+trait PathSugar
     extends QualifiedByFileSystem
     with ExistInFileSystem
     with PathPropertyMatcher
@@ -8,4 +8,4 @@ trait Pavement
     with PathContaining
     with PathLength
 
-object Pavement extends Pavement
+object PathSugar extends PathSugar

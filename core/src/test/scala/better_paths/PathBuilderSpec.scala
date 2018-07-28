@@ -1,7 +1,7 @@
 package better_paths
 
 import better_paths.Dsl._
-import better_paths.pavement.Pavement
+import better_paths.path_sugar.PathSugar
 import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
 import org.apache.hadoop.fs.Path
 import org.scalatest.{FlatSpec, Matchers}
@@ -11,7 +11,7 @@ class PathBuilderSpec
     with Matchers
     with TestMiniDFSCluster
     with TempPathProvider
-    with Pavement {
+    with PathSugar {
 
   "/" can "be used with strings" in {
     new Path("a") / "b" shouldBe new Path("a/b")

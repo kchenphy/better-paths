@@ -1,19 +1,19 @@
-package better_paths.pavement
+package better_paths.path_sugar
 
 import better_paths.test_utils.{TempPathProvider, TestMiniDFSCluster}
 import org.apache.hadoop.fs.Path
 import org.scalatest.{FlatSpec, Matchers}
-import resource.managed
+import resource._
 
-class PathLengthTest
+class PathSizeTest
     extends FlatSpec
     with Matchers
     with TestMiniDFSCluster
     with TempPathProvider
-    with PathLength {
+    with PathSize {
 
   "PathSize" should "return correct size" in {
-    val ps = pathLength
+    val ps = pathSize
     val path = new Path(tmpPath, "a")
     managed(fs.create(path)).acquireAndGet { dos =>
       {
@@ -23,6 +23,6 @@ class PathLengthTest
       }
     }
 
-    ps.lengthOf(path) shouldBe 4
+    ps.sizeOf(path) shouldBe 4
   }
 }
